@@ -11,7 +11,6 @@ class Pessoa{
     unsigned long long int cpf;
     unsigned int number_of_cars;
 
-
   public:
 
     //Sobrescrita do método construtor
@@ -43,9 +42,10 @@ class Pessoa{
     }
 
     //Métodos do Número de Carros
-    void setNumberOfCars(unsigned int number_of_cars){
-      this->number_of_cars = number_of_cars;
+    void setNumberOfCars(unsigned int numberOfCars){
+      this->number_of_cars = numberOfCars;
     }
+
     unsigned int getNumberOfCars(){
       return number_of_cars;
     }
@@ -114,6 +114,8 @@ class Car{
 void menu_inicial();
 
 int main(){
+  //Flag que indica primeiro uso
+  bool first_flag = false;
 
   //Seletor da opção
   char selector = '&';
@@ -121,10 +123,21 @@ int main(){
   //Mostra Menu inicial
   menu_inicial();
 
-  ofstream user_db("users.txt", fstream::out | fstream::app);
-  ofstream car_db("cars.txt", fstream::out | fstream::app);
+  fstream user_db("users.txt", fstream::out | fstream::in | fstream::app);
+  fstream car_db("cars.txt", fstream::out | fstream::in | fstream::app);
+
+  //Verifica se o arquivo de usuários está vazio
+  user_db.seekg(0, user_db.end);
+  int lenght = user_db.tellg();
+
+  //Fecha os arquivos
   user_db.close();
   car_db.close();
+
+  //Seta flag para indicar primeiro uso
+  if(lenght == 0){
+    first_flag = true;
+  }
 
   while(selector != '7'){
 
@@ -132,43 +145,47 @@ int main(){
     set<Pessoa> users;
     set<Car> cars;
 
-    //Monta o set de Pessoas
-    ifstream user_db_in("users.txt", fstream::in);
-    while(!user_db_in.eof()){
-      unsigned long long int cpf;
-      string name;
-      unsigned int number_of_cars;
+    //Verifica se não é o primeiro uso para buscar os dados do arquivo
+    if(!first_flag){
+      //Monta o set de Pessoas
+      ifstream user_db_in("users.txt", fstream::in);
+      while(!user_db_in.eof()){
+        unsigned long long int cpf;
+        string name;
+        unsigned int number_of_cars;
 
-      user_db_in >> cpf;
-      user_db_in >> name;
-      user_db_in >> number_of_cars;
+        user_db_in >> cpf;
+        user_db_in >> name;
+        user_db_in >> number_of_cars;
 
-      Pessoa person(name, cpf, number_of_cars);
-      users.insert(person);
+        Pessoa person(name, cpf, number_of_cars);
+        users.insert(person);
+      }
+      user_db_in.close();
+
+      //Monta o set de Carros
+      ifstream cars_db_in("cars.txt", fstream::in);
+      while(!cars_db_in.eof()){
+        string plate;
+        string model;
+        string color;
+        unsigned long long int owner_cpf;
+
+        cars_db_in >> plate;
+        cars_db_in >> model;
+        cars_db_in >> color;
+        cars_db_in >> owner_cpf;
+
+        //Impede que dados a mais sejam guardados no arquivo
+        if(!cars_db_in.eof()){
+          Car vehicle(plate, model, color, owner_cpf);
+          cars.insert(vehicle);
+        }
+
+      }
+      cars_db_in.close();
+
     }
-    user_db_in.close();
-
-    //Monta o set de Carros
-    ifstream cars_db_in("cars.txt", fstream::in);
-    while(!cars_db_in.eof()){
-      string plate;
-      string model;
-      string color;
-      unsigned long long int owner_cpf;
-
-      cars_db_in >> owner_cpf;
-      cars_db_in >> plate;
-      cars_db_in >> model;
-      cars_db_in >> color;
-
-
-      Car vehicle(plate, model, color, owner_cpf);
-      cars.insert(vehicle);
-    }
-    cars_db_in.close();
-
-
-
 
     //Variáveis Auxiliadoras
     string aux_string;
@@ -177,44 +194,73 @@ int main(){
 
     if(selector == '1'){
 
-      // if(is_empty(cars_db)){
-      //   cout << "Não existem carros cadastrados no Banco De Dados. Escolha outra opção." << endl;
-      // }
-      // else{
-      //
-      //
-      // }
-      int cont = 1;
-      for(auto item: users){
-        cout << "Usuário Número " << cont << endl;
-        cout << "Nome do usuário com for auto: " + item.getName() << endl;
-        cout << "CPF do usuário com for auto: " << item.getCpf() << endl;
-        cout << "Número de carros do usuário com for auto: " << item.getNumberOfCars() << endl;
-        cout << endl;
-        cont++;
+      cout << "(1) Consultar Carro" << endl;
+
+      if(first_flag){
+        cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
       }
-    }
-
-    else if(selector == '2'){
-      cout << "Digite o CPF do Usuário: ";
-      cin >> aux_int;
-
-      for(auto item: users){
-        if(item.getCpf() == aux_int){
-
-          cout << "Nome do usuário com for auto: " + item.getName() << endl;
-          cout << "CPF do usuário com for auto: " + item.getCpf() << endl;
-          cout << "Número de carros do usuário com for auto: " << item.getNumberOfCars() << endl;
-
+      else{
+        bool flag_found_car = false;
+        cout << "Digite a placa do Carro: ";
+        cin >> aux_string;
+        for(auto item: cars){
+          if(item.getPlate() == aux_string){
+            cout << "Carro Encontrado!" << endl;
+            cout << "Placa: " << item.getPlate() << endl;
+            cout << "Modelo: " << item.getModel() << endl;
+            cout << "Cor: " << item.getColor() << endl;
+            cout << "Cpf do Dono: " << item.getOwnerCpf() << endl;
+            flag_found_car = true;
+          }
+        }
+        if(flag_found_car == false){
+          cout << "Carro Não Encontrado." << endl;
         }
       }
+    } // Correto //Pronto
+
+    else if(selector == '2'){
+
+      cout << "(2) Consultar Usuário" << endl;
 
 
-    }
+      if(first_flag){
+        cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
+      }
+      else{
+        cout << "Digite o CPF do Usuário: ";
+        cin >> aux_int;
+        bool flag_found_user = false;
+
+        for(auto item: users){
+          if(item.getCpf() == aux_int){
+
+            flag_found_user = true;
+            cout << "Nome do usuário: " << item.getName() << endl;
+            cout << "CPF do usuário: " << item.getCpf() << endl;
+            cout << "Número de carros do usuário: " << item.getNumberOfCars() << endl;
+
+            int cont = 1;
+
+            for(auto item_car: cars){
+              if(item_car.getOwnerCpf() == item.getCpf()){
+                cout << "Placa do Carro " << cont << ": " << item_car.getPlate() << endl;
+                cont++;
+              }
+            }
+
+          }
+        }
+        if(flag_found_user == false){
+          cout << "Usuário Não Encontrado." << endl;
+        }
+      }
+    } //Correto //Pronto
 
     else if(selector == '3'){
 
-      cout << "Inserir Novo Usuário" << endl;
+      cout << "(3) Adicionar Usuário (Obrigatório Possuir Carro)" << endl;
+
       unsigned int aux_number_of_cars = 0;
       bool flag = false;
       //Verifica se o CPF já não foi Cadastrado
@@ -231,8 +277,18 @@ int main(){
       }
       cout << "Digite o Nome do Usuário: ";
       cin >> aux_string;
-      cout << "Digite o Número de Carros do Usuário: ";
-      cin >> aux_number_of_cars;
+
+      flag = false;
+      while(!flag){
+        cout << "Digite o Número de Carros do Usuário: ";
+        cin >> aux_number_of_cars;
+        flag = true;
+        if(aux_number_of_cars <= 0){
+          flag = false;
+          cout << "Número de Carros Inválido. Insira Pelo Menos Um Carro" << endl;
+        }
+      }
+
 
       Pessoa user(aux_string, aux_int, aux_number_of_cars);
       users.insert(user);
@@ -268,40 +324,220 @@ int main(){
         cars.insert(vehicle);
       }
 
+      if(first_flag){
+        first_flag = false;
+      }
 
-    }
+      cout << "Usuário Cadastrado Com Sucesso!" << endl;
+
+    }  //Correto //Pronto
 
     else if(selector == '4'){
-      for(auto item: cars){
-        cout << "Placa: " << item.getPlate() << endl;
-        cout << "Modelo: " << item.getModel() << endl;
-        cout << "Cor: " << item.getColor() << endl;
-        cout << "Cpf do Dono: " << item.getOwnerCpf() << endl;
+
+      cout << "(4) Adicionar Carro a Usuário" << endl;
+
+      if(first_flag){
+        cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
+      }
+      else{
+        Pessoa *user_to_be_updated;
+        string name;
+        unsigned long long int cpf;
+        unsigned int number_of_cars;
+
+        cout << "Digite o CPF do Usuário a adicionar: ";
+        cin >> aux_int;
+        bool flag_found_user = false;
+
+        for(auto item: users){
+          if(item.getCpf() == aux_int){
+
+            flag_found_user = true;
+
+            cout << "Nome do usuário: " << item.getName() << endl;
+            cout << "CPF do usuário: " << item.getCpf() << endl;
+            cout << "Número de carros do usuário: " << item.getNumberOfCars() << endl;
+
+            string plate;
+            string model;
+            string color;
+
+            cout << "Insira Dados do Carro:" << endl;
+
+            bool flag_plate = false;
+            while(!flag_plate){
+              cout << "Placa: ";
+              cin >> plate;
+              flag_plate = true;
+              for(auto item_car: cars){
+                if(item_car.getPlate() == plate){
+                  flag_plate = false;
+                  cout << "Carro Já Cadastrado." << endl;
+                }
+              }
+            }
+            cout << "Modelo: ";
+            cin >> model;
+            cout << "Cor: ";
+            cin >> color;
+            cout << endl;
+
+            Car vehicle(plate, color, model, aux_int);
+            cars.insert(vehicle);
+            cout << "Carro Adicionado com Sucesso!" << endl;
+
+            user_to_be_updated = &item;
+            name = item.getName();
+            cpf = item.getCpf();
+            number_of_cars = item.getNumberOfCars() + 1;
+
+          }
+        }
+
+
+
+
+
+        if(flag_found_user == false){
+          cout << "Usuário Não Encontrado." << endl;
+        }
+        else{
+
+          Pessoa user_updated(name, cpf, number_of_cars);
+          users.erase(*user_to_be_updated);
+          users.insert(user_updated);
+
+          for(auto item: users){
+              cout << "Nome do usuário: " << item.getName() << endl;
+              cout << "CPF do usuário: " << item.getCpf() << endl;
+              cout << "Número de carros do usuário: " << item.getNumberOfCars() << endl << endl;
+
+            }
+        }
       }
     }
 
-    //Salvando no Banco de Pessoas
-    ofstream user_db_out("users.txt", fstream::out);
-    if(user_db_out.is_open()){
-      for(auto item: users){
-        user_db_out << item.getCpf() << endl;
-        user_db_out << item.getName() << endl;
-        user_db_out << item.getNumberOfCars() << endl;
-      }
-    }
-    user_db_out.close();
+    else if(selector == '5'){
+      cout << "(5) Excluir Carro" << endl;
 
-    //Salvando no Banco de Carros
-    ofstream cars_db_out("cars.txt", fstream::out);
-    if(cars_db_out.is_open()){
-      for(auto item: cars){
-        cars_db_out << item.getOwnerCpf() << endl;
-        cars_db_out << item.getPlate() << endl;
-        cars_db_out << item.getModel() << endl;
-        cars_db_out << item.getColor() << endl;
+      if(first_flag){
+        cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
+      }
+      else{
+        bool flag_found_car = false;
+        bool need_to_delete_user = false;
+        Car *car_to_delete;
+        Pessoa *user_to_delete;
+        cout << "Digite a placa do Carro a Ser Excluído: ";
+        cin >> aux_string;
+        for(auto item: cars){
+          if(item.getPlate() == aux_string){
+            cout << "Carro Encontrado!" << endl;
+            for(auto item_person: users){
+              if(item_person.getCpf() == item.getOwnerCpf()){
+                car_to_delete = &item;
+                flag_found_car = true;
+                if(item_person.getNumberOfCars() == 1){
+                  need_to_delete_user = true;
+                  user_to_delete = &item_person;
+                  cout << "Único carro do usuário. Usuário será excluído." << endl;
+                  break;
+                }
+                else{
+                  unsigned int number_of_cars = item_person.getNumberOfCars() - 1;
+                  item_person.setNumberOfCars(number_of_cars);
+                }
+              }
+            }
+            cars.erase(*car_to_delete);
+            cout << "Carro Deletado do Sistema" << endl;
+            if(need_to_delete_user){
+              users.erase(*user_to_delete);
+              cout << "Usuário Deletado do Sistema" << endl;
+            }
+          }
+        }
+        if(flag_found_car == false){
+          cout << "Carro Não Encontrado." << endl;
+        }
       }
     }
-    cars_db_out.close();
+
+    else if(selector == '6'){
+
+      cout << "(6) Excluir Usuário e Carros Pertencentes" << endl;
+
+      if(first_flag){
+        cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
+      }
+      else{
+        Pessoa *user_to_delete;
+        vector<Car *> cars_to_delete;
+
+        cout << "Digite o CPF do Usuário: ";
+        cin >> aux_int;
+        bool flag_found_user = false;
+
+        for(auto item: users){
+          if(item.getCpf() == aux_int){
+
+            flag_found_user = true;
+            cout << "Usuário Encontrado" << endl;
+            user_to_delete = &item;
+
+            for(unsigned int cont = 1; cont <= item.getNumberOfCars(); cont++){
+              for(auto item_car: cars){
+                if(item_car.getOwnerCpf() == item.getCpf()){
+                  cout << "Carro Encontrado: " << item_car.getPlate() << endl;
+                  cars_to_delete.push_back(&item_car);
+                }
+              }
+            }
+
+          }
+        }
+
+        if(flag_found_user == false){
+          cout << "Usuário Não Encontrado." << endl;
+        }
+        else{
+          //Deleta o Usuário e Seus Carros
+          users.erase(*user_to_delete);
+          cout << "Usuário Deletado" << endl;
+          for(unsigned int cont = 0; cont < cars_to_delete.size(); cont++){
+            cars.erase(*cars_to_delete[cont]);
+          }
+        }
+      }
+
+    }
+
+    //Verifica se não é o primeiro uso para salvar os dados
+    if(!first_flag){
+      //Salvando no Banco de Pessoas
+      ofstream user_db_out("users.txt", fstream::out);
+      if(user_db_out.is_open()){
+        for(auto item: users){
+          user_db_out << item.getCpf() << endl;
+          user_db_out << item.getName() << endl;
+          user_db_out << item.getNumberOfCars() << endl;
+        }
+      }
+      user_db_out.close();
+
+      //Salvando no Banco de Carros
+      ofstream cars_db_out("cars.txt", fstream::out);
+      if(cars_db_out.is_open()){
+        for(auto item: cars){
+          cars_db_out << item.getPlate() << endl;
+          cars_db_out << item.getModel() << endl;
+          cars_db_out << item.getColor() << endl;
+          cars_db_out << item.getOwnerCpf() << endl;
+        }
+      }
+      cars_db_out.close();
+    }
+
   }
 
   cout << "Saiu\n";
@@ -310,15 +546,15 @@ int main(){
 }
 
 void menu_inicial() {
-  printf("\n-------------------------------------------------------------------------------------------\n");
-  printf("---\t\t\tBANCO DE DADOS DE CARROS:\t\t\t\t\t---\n");
-  printf("-------------------------------------------------------------------------------------------\n");
-  printf("---\t\t\t(1) Consultar Carro\t\t\t\t\t---\n");
-  printf("---\t\t\t(2) Consultar Usuário\t\t\t\t\t---\n");
-  printf("---\t\t\t(3) Adicionar Usuário (Obrigatório Possuir Carro)\t\t\t\t\t---\n");
-  printf("---\t\t\t(4) Adicionar Carro a Usuário\t\t\t\t\t---\n");
-  printf("---\t\t\t(5) Excluir Carro\t\t\t\t\t---\n");
-  printf("---\t\t\t(6) Excluir Usuário\t\t\t\t\t---\n");
-  printf("---\t\t\t(7) Sair\t\t\t\t\t\t\t---\n");
-  printf("-------------------------------------------------------------------------------------------\n");
+  printf("\n-----------------------------------------------------\n");
+  printf("---\tBANCO DE DADOS DE CARROS: -------------------\n");
+  printf("-----------------------------------------------------\n");
+  printf("---\t(1) Consultar Carro\n");
+  printf("---\t(2) Consultar Usuário\n");
+  printf("---\t(3) Adicionar Usuário (Obrigatório Possuir Carro)\n");
+  printf("---\t(4) Adicionar Carro a Usuário\n");
+  printf("---\t(5) Excluir Carro\n");
+  printf("---\t(6) Excluir Usuário e Carros Pertencentes\n");
+  printf("---\t(7) Sair\n");
+  printf("-----------------------------------------------------\n");
 }
