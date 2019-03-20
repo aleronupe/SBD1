@@ -1,0 +1,28 @@
+Aluno: Alexandre Miguel Rodrigues Nunes Pereira
+Matrícula: 16/0000840
+
+### Solução Para Problema De Proprietários de Carro ###
+
+A Solução que acompanha esse arquivo está na linguagem C++ versão 11, fazendo uso de arquivos
+e a estrutura std::set para manipulação dos dados em tempo de execução.
+
+Para compilação do arquivo recomenda-se o sistema operacional Linux, fazendo uso
+da seguinte linha de comandos
+
+
+  g++ -o [PROG] -std=c++11 -O2 -Wall aula2exer1_AlexandrePereira_16-0000840.cpp
+
+
+Nesse exemplo o nome do arquivo executável é representado por [PROG], mas fica a critério do usuário.
+Para execução do programa, basta executar o arquivo programado, conforme denotado pela seguinte linha de comando.
+
+  ./[PROG]
+
+
+O Programa conta com menu a ser impresso no início indicando os modos de seleção e opções para manipulação dos dados do carro.
+Não foram implementados validações por Regex, ficando a cargo do usuário seguir as instruções explicitadas para cada inserção de dados.
+O Programa também diferencia, para placa de Carros, letras maiúsculas e minúsculas.
+Os Arquivos texto criados permitem observação da manipulação dos registros e da estruturação dos registros salvos, de forma
+
+    users.txt - Registros salvos em ordem decrescente de CPF
+    cars.txt - Registros salvos em ordem crescente conforme a Placa

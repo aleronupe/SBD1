@@ -194,7 +194,7 @@ int main(){
 
     if(selector == '1'){
 
-      cout << "(1) Consultar Carro" << endl;
+      cout << endl << "(1) Consultar Carro" << endl;
 
       if(first_flag){
         cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
@@ -217,11 +217,11 @@ int main(){
           cout << "Carro Não Encontrado." << endl;
         }
       }
-    } // Correto //Pronto
+    } // Correto //Pronto //Funcionando
 
     else if(selector == '2'){
 
-      cout << "(2) Consultar Usuário" << endl;
+      cout << endl << "(2) Consultar Usuário" << endl;
 
 
       if(first_flag){
@@ -255,11 +255,11 @@ int main(){
           cout << "Usuário Não Encontrado." << endl;
         }
       }
-    } //Correto //Pronto
+    } //Correto //Pronto //Funcionando
 
     else if(selector == '3'){
 
-      cout << "(3) Adicionar Usuário (Obrigatório Possuir Carro)" << endl;
+      cout << endl << "(3) Adicionar Usuário (Obrigatório Possuir Carro)" << endl;
 
       unsigned int aux_number_of_cars = 0;
       bool flag = false;
@@ -330,17 +330,16 @@ int main(){
 
       cout << "Usuário Cadastrado Com Sucesso!" << endl;
 
-    }  //Correto //Pronto
+    }  //Correto //Pronto //Funcionando
 
     else if(selector == '4'){
 
-      cout << "(4) Adicionar Carro a Usuário" << endl;
+      cout << endl << "(4) Adicionar Carro a Usuário" << endl;
 
       if(first_flag){
         cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
       }
       else{
-        Pessoa *user_to_be_updated;
         string name;
         unsigned long long int cpf;
         unsigned int number_of_cars;
@@ -386,93 +385,114 @@ int main(){
             cars.insert(vehicle);
             cout << "Carro Adicionado com Sucesso!" << endl;
 
-            user_to_be_updated = &item;
             name = item.getName();
             cpf = item.getCpf();
-            number_of_cars = item.getNumberOfCars() + 1;
+            number_of_cars = item.getNumberOfCars();
 
           }
         }
-
-
-
-
 
         if(flag_found_user == false){
           cout << "Usuário Não Encontrado." << endl;
         }
         else{
-
-          Pessoa user_updated(name, cpf, number_of_cars);
-          users.erase(*user_to_be_updated);
-          users.insert(user_updated);
-
-          for(auto item: users){
-              cout << "Nome do usuário: " << item.getName() << endl;
-              cout << "CPF do usuário: " << item.getCpf() << endl;
-              cout << "Número de carros do usuário: " << item.getNumberOfCars() << endl << endl;
-
-            }
+          users.erase(Pessoa(name, cpf, number_of_cars));
+          number_of_cars = number_of_cars + 1;
+          users.insert(Pessoa(name, cpf, number_of_cars));
         }
       }
     }
 
     else if(selector == '5'){
-      cout << "(5) Excluir Carro" << endl;
+      cout << endl << "(5) Excluir Carro" << endl;
 
       if(first_flag){
         cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
       }
       else{
         bool flag_found_car = false;
+        //Dados do carro a ser deletado
+        string plate;
+        string model;
+        string color;
+        unsigned long long int owner_cpf_here;
+        //Dados do Usuário a ser modificado
+        string name;
+        unsigned long long int cpf;
+        unsigned int number_of_cars;
+
+        //Caso em que o usuário ficará sem carros
         bool need_to_delete_user = false;
-        Car *car_to_delete;
-        Pessoa *user_to_delete;
+
         cout << "Digite a placa do Carro a Ser Excluído: ";
         cin >> aux_string;
+
+
         for(auto item: cars){
           if(item.getPlate() == aux_string){
             cout << "Carro Encontrado!" << endl;
+            plate = item.getPlate();
+            model = item.getModel();
+            color = item.getColor();
+            owner_cpf_here = item.getOwnerCpf();
+
             for(auto item_person: users){
               if(item_person.getCpf() == item.getOwnerCpf()){
-                car_to_delete = &item;
+
+                name = item_person.getName();
+                cpf = item_person.getCpf();
+                number_of_cars = item_person.getNumberOfCars();
+
                 flag_found_car = true;
+
                 if(item_person.getNumberOfCars() == 1){
                   need_to_delete_user = true;
-                  user_to_delete = &item_person;
                   cout << "Único carro do usuário. Usuário será excluído." << endl;
-                  break;
-                }
-                else{
-                  unsigned int number_of_cars = item_person.getNumberOfCars() - 1;
-                  item_person.setNumberOfCars(number_of_cars);
                 }
               }
             }
-            cars.erase(*car_to_delete);
-            cout << "Carro Deletado do Sistema" << endl;
-            if(need_to_delete_user){
-              users.erase(*user_to_delete);
-              cout << "Usuário Deletado do Sistema" << endl;
-            }
           }
         }
+
+
         if(flag_found_car == false){
           cout << "Carro Não Encontrado." << endl;
+        }
+        else{
+          cars.erase(Car(plate, model, color, owner_cpf_here));
+          cout << "Carro Deletado do Sistema" << endl;
+
+          //Caso o usuário seja deletado
+          if(need_to_delete_user){
+            users.erase(Pessoa(name, cpf, number_of_cars));
+            cout << "Usuário Deletado do Sistema:" << endl;
+            cout << "CPF: " << cpf << endl;
+            cout << "Nome: " << name << endl;
+          }
+          else{
+            users.erase(Pessoa(name, cpf, number_of_cars));
+            number_of_cars = number_of_cars - 1;
+            users.insert(Pessoa(name, cpf, number_of_cars));
+            cout << "Usuário Modificado:" << endl;
+            cout << "CPF: " << cpf << endl;
+            cout << "Nome: " << name << endl;
+          }
         }
       }
     }
 
     else if(selector == '6'){
 
-      cout << "(6) Excluir Usuário e Carros Pertencentes" << endl;
+      cout << endl << "(6) Excluir Usuário e Carros Pertencentes" << endl;
 
       if(first_flag){
         cout << "Banco de Dados Vazio. Escolha uma opção de Inserção." << endl;
       }
       else{
-        Pessoa *user_to_delete;
-        vector<Car *> cars_to_delete;
+        string name;
+        unsigned long long int cpf;
+        unsigned int number_of_cars;
+        unsigned int quantity_of_cars;
 
         cout << "Digite o CPF do Usuário: ";
         cin >> aux_int;
@@ -483,16 +503,10 @@ int main(){
 
             flag_found_user = true;
             cout << "Usuário Encontrado" << endl;
-            user_to_delete = &item;
-
-            for(unsigned int cont = 1; cont <= item.getNumberOfCars(); cont++){
-              for(auto item_car: cars){
-                if(item_car.getOwnerCpf() == item.getCpf()){
-                  cout << "Carro Encontrado: " << item_car.getPlate() << endl;
-                  cars_to_delete.push_back(&item_car);
-                }
-              }
-            }
+            quantity_of_cars = item.getNumberOfCars();
+            name = item.getName();
+            cpf = item.getCpf();
+            number_of_cars = item.getNumberOfCars();
 
           }
         }
@@ -502,15 +516,32 @@ int main(){
         }
         else{
           //Deleta o Usuário e Seus Carros
-          users.erase(*user_to_delete);
+          users.erase(Pessoa(name, cpf, number_of_cars));
           cout << "Usuário Deletado" << endl;
-          for(unsigned int cont = 0; cont < cars_to_delete.size(); cont++){
-            cars.erase(*cars_to_delete[cont]);
+
+          while(quantity_of_cars > 0){
+            string plate;
+            string model;
+            string color;
+            unsigned long long int owner_cpf_here;
+
+            for(auto item_car: cars){
+              if(item_car.getOwnerCpf() == aux_int){
+                cout << "Carro Deletado: " << item_car.getPlate() << endl;
+                plate = item_car.getPlate();
+                model = item_car.getModel();
+                color = item_car.getColor();
+                owner_cpf_here = item_car.getOwnerCpf();
+                break;
+              }
+            }
+            cars.erase(Car(plate, model, color, owner_cpf_here));
+            quantity_of_cars--;
           }
         }
       }
 
-    }
+    } //Funcionando
 
     //Verifica se não é o primeiro uso para salvar os dados
     if(!first_flag){
@@ -540,7 +571,7 @@ int main(){
 
   }
 
-  cout << "Saiu\n";
+  cout << endl << "(7) Sair" << endl;
 
   return 0;
 }
