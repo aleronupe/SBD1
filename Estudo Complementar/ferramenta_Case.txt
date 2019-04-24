@@ -1,0 +1,45 @@
+Ferramentas Case
+
+        Definição: Ferramentas que auxiliam atividades de engenharia de software, como:
+                - Análise de Requisitos
+                - Programação
+                - Testes
+
+        Auxilia o Desenvolvedor no Ciclo de Desenvolvimento
+        Eliminam problemas de desenvolvimento
+        Auxiliam na demonstração da criatividade
+        Melhoram a qualidade e Aumentam a produtividade
+
+        Nova Fase: Geram código fonte
+
+Categorias
+
+        Front End (Upper CASE):  Etapas iniciais de criação do sistema
+                - Planejamento, Análise e Projeto
+
+        Back End (Lower CASE): Apoio à parte física
+                - Codificação, Testes e Manutenção
+
+        I-CASE (Integrated CASE): Ciclo de Vida do Software
+                - Requisitos -> Controle Final de Qualidade
+
+Vantagens:
+        Uniformização
+        Reutiliação de Artefatos (no projeto e entre projetos)
+        Automatização (Código e Documentação)
+        Diminui tempo de Desenvolvimento
+        Integração de Artefatos (Output de uma ferramenta, Input da Outra ferramenta)
+        Consistência e Qualidade
+
+Desvantagens:
+        Incompatibilidade de ferramentas
+        Alto Custo (Treino e Utilização)
+        Alta Curva de aprendizagem
+        Limita Flexibilidade
+
+Ferramentas:
+        Modelagem de Dados - AJudam o projetista
+        Especificação de Projeto e Análise 
+        Protótipo de Interface
+        Geração de Código Fonte - Gera automaticamente software funcional ou compilável
+

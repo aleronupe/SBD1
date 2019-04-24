@@ -1,0 +1,14 @@
+Aluno: Alexandre Miguel Rodrigues Nunes Pereira
+Matrícula: 16/0000840
+
+Alterações
+
+Em relação ao exercício contido em CORRIGIR_NOVA_PROPOSTA_aula4exer5Evolucao2_EduardoRodrigues_14-0168192.zip, as alterações realizadas referem-se a:
+
+1) Alteração do tamanho dos atributos, de forma geral, aumentando os espaços utilizados para preenchimendo completo de dados
+
+2) Representação dos literais ("M" e "F") permitidos para o sexo do usuário
+
+3) Transferência do atributo "posologia" da entidade RECEITA para o relacionamento "contem", dado que cada medicamento contido em uma receita contém uma posologia própria, não sendo uma caracterísitica inerente nem ao Medicamento como entidade, nem à receita.
+
+4) Adição da explicação do relacionamento contendo posologia na descrição dos relacionamentos no M-E.

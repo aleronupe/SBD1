@@ -1,0 +1,2 @@
+1) Sim
+2) A Ferramenta brModelo é classificada como ferramenta CASE, pois auxilia uma atividade de engenharia de software em uma etapa de planejamento das relações do banco de dados, classificada então pela categoria Upper CASE, permitindo que, pela elaboração de um modelo mais abstrato, se obtenha uma estrutura mais elaborada e que agrega no desenvolvimento da atividade de modelagem de dados, como a obtenção de um modelo lógico a partir de um modelo conceitual.
