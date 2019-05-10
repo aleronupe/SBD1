@@ -1,0 +1,12 @@
+* Alterações Exercício 6 - Lieverton
+
+** ME-R
+
+- Alterar atributo "tipo" dentro de "TIPO_INFRACAO" para "descricao"
+- Alterar quais atributos compõem a chave primária da INFRACAO, não retirando aqueles atributos mas provavelmente colocando um id para chave primária
+
+
+** DE-R
+
+- Alterar atributo "telefone" quanto a atributo opcional
+ 
